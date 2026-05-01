@@ -53,6 +53,11 @@ export function agentLoop(
 		streamFn,
 	).then((messages) => {
 		stream.end(messages);
+	}	).catch((error) => {
+		console.error("[agentLoop] Error:", error);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		stream.push({ type: "error", error: error instanceof Error ? error.message : String(error) } as any);
+		stream.end([]);
 	});
 
 	return stream;
@@ -92,6 +97,11 @@ export function agentLoopContinue(
 		streamFn,
 	).then((messages) => {
 		stream.end(messages);
+	}).catch((error) => {
+		console.error("[agentLoopContinue] Error:", error);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		stream.push({ type: "error", error: error instanceof Error ? error.message : String(error) } as any);
+		stream.end([]);
 	});
 
 	return stream;
@@ -319,9 +329,11 @@ async function streamAssistantResponse(
 				}
 				break;
 
-			case "done":
-			case "error": {
-				const finalMessage = await response.result();
+		case "done":
+		case "error": {
+			console.log("[agent-loop] Received event type:", event.type);
+			const finalMessage = await response.result();
+			console.log("[agent-loop] finalMessage:", JSON.stringify(finalMessage).slice(0, 200));
 				if (addedPartial) {
 					context.messages[context.messages.length - 1] = finalMessage;
 				} else {

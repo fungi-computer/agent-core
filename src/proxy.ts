@@ -185,6 +185,7 @@ export function streamProxy(model: Model<any>, context: Context, options: ProxyS
 
 			stream.end();
 		} catch (error) {
+			console.error("[proxy] Stream error:", error);
 			const errorMessage = error instanceof Error ? error.message : String(error);
 			const reason = options.signal?.aborted ? "aborted" : "error";
 			partial.stopReason = reason;
