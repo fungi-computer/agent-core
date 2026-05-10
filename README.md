@@ -1,8 +1,8 @@
 # @shiit/agent-core
 
 ---
-WARNING!!! THIS IS A HIGH EFFORT SLOP FORK, USE AT YOUR OWN RISK
----
+
+## WARNING!!! THIS IS A HIGH EFFORT SLOP FORK, USE AT YOUR OWN RISK
 
 Fork of `@mariozechner/pi-agent-core` with streaming message ID support.
 
@@ -11,6 +11,7 @@ Fork of `@mariozechner/pi-agent-core` with streaming message ID support.
 The upstream emits `message_start`, `message_update`, and `message_end` events without IDs, making it impossible for clients to match streaming updates to specific messages.
 
 This fork adds:
+
 - `id: string` field to `message_start`, `message_update`, and `message_end` events
 - `delta: string` and `thinkingDelta: string` fields to `message_update` for efficient streaming
 
@@ -47,11 +48,11 @@ for await (const event of agentLoop(prompts, context, config)) {
 
 All `AgentEvent` types that were missing `id` now include it:
 
-| Event | Added Fields |
-|-------|--------------|
-| `message_start` | `id: string` |
+| Event            | Added Fields                                           |
+| ---------------- | ------------------------------------------------------ |
+| `message_start`  | `id: string`                                           |
 | `message_update` | `id: string`, `delta: string`, `thinkingDelta: string` |
-| `message_end` | `id: string` |
+| `message_end`    | `id: string`                                           |
 
 ### Dependencies
 

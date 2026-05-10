@@ -1,27 +1,37 @@
 {
-	"name": "@shiit/agent-core",
-	"version": "0.66.1",
-	"description": "Fork of @mariozechner/pi-agent-core with message ID support",
-	"type": "module",
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"files": ["dist", "README.md", "LICENSE"],
-	"scripts": {
-		"clean": "rm -rf dist",
-		"build": "tsc -p tsconfig.build.json",
-		"dev": "tsc -p tsconfig.build.json --watch",
-		"test": "vitest --run"
-	},
-	"dependencies": {
-		"@mariozechner/pi-ai": "^0.66.1",
-		"@shiit/id": "^0.1.0",
-		"@sinclair/typebox": "^0.34.49"
-	},
-	"devDependencies": {
-		"@types/node": "^24.3.0",
-		"typescript": "^5.7.3",
-		"vitest": "^3.2.4"
-	},
-	"keywords": ["ai", "agent", "llm", "transport", "state-management"],
-	"license": "MIT"
+  "name": "@shiit/agent-core",
+  "version": "0.66.1",
+  "description": "Fork of @mariozechner/pi-agent-core with message ID support",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "@mariozechner/pi-ai": "^0.66.1",
+    "@shiit/id": "^0.1.0",
+    "@sinclair/typebox": "^0.34.49"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "llm",
+    "transport",
+    "state-management"
+  ],
+  "license": "MIT"
 }

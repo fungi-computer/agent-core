@@ -1,14 +1,14 @@
 import type {
-	AssistantMessage,
-	AssistantMessageEvent,
-	ImageContent,
-	Message,
-	Model,
-	SimpleStreamOptions,
-	streamSimple,
-	TextContent,
-	Tool,
-	ToolResultMessage,
+  AssistantMessage,
+  AssistantMessageEvent,
+  ImageContent,
+  Message,
+  Model,
+  SimpleStreamOptions,
+  streamSimple,
+  TextContent,
+  Tool,
+  ToolResultMessage,
 } from "@mariozechner/pi-ai";
 import type { Static, TSchema } from "@sinclair/typebox";
 
@@ -22,7 +22,7 @@ import type { Static, TSchema } from "@sinclair/typebox";
  *   final AssistantMessage with stopReason "error" or "aborted" and errorMessage.
  */
 export type StreamFn = (
-	...args: Parameters<typeof streamSimple>
+  ...args: Parameters<typeof streamSimple>
 ) => ReturnType<typeof streamSimple> | Promise<ReturnType<typeof streamSimple>>;
 
 /**
@@ -35,7 +35,10 @@ export type StreamFn = (
 export type ToolExecutionMode = "sequential" | "parallel";
 
 /** A single tool call content block emitted by an assistant message. */
-export type AgentToolCall = Extract<AssistantMessage["content"][number], { type: "toolCall" }>;
+export type AgentToolCall = Extract<
+  AssistantMessage["content"][number],
+  { type: "toolCall" }
+>;
 
 /**
  * Result returned from `beforeToolCall`.
@@ -44,8 +47,8 @@ export type AgentToolCall = Extract<AssistantMessage["content"][number], { type:
  * `reason` becomes the text shown in that error result. If omitted, a default blocked message is used.
  */
 export interface BeforeToolCallResult {
-	block?: boolean;
-	reason?: string;
+  block?: boolean;
+  reason?: string;
 }
 
 /**
@@ -60,164 +63,181 @@ export interface BeforeToolCallResult {
  * There is no deep merge for `content` or `details`.
  */
 export interface AfterToolCallResult {
-	content?: (TextContent | ImageContent)[];
-	details?: unknown;
-	isError?: boolean;
+  content?: (TextContent | ImageContent)[];
+  details?: unknown;
+  isError?: boolean;
 }
 
 /** Context passed to `beforeToolCall`. */
 export interface BeforeToolCallContext {
-	/** The assistant message that requested the tool call. */
-	assistantMessage: AssistantMessage;
-	/** The raw tool call block from `assistantMessage.content`. */
-	toolCall: AgentToolCall;
-	/** Validated tool arguments for the target tool schema. */
-	args: unknown;
-	/** Current agent context at the time the tool call is prepared. */
-	context: AgentContext;
+  /** The assistant message that requested the tool call. */
+  assistantMessage: AssistantMessage;
+  /** The raw tool call block from `assistantMessage.content`. */
+  toolCall: AgentToolCall;
+  /** Validated tool arguments for the target tool schema. */
+  args: unknown;
+  /** Current agent context at the time the tool call is prepared. */
+  context: AgentContext;
 }
 
 /** Context passed to `afterToolCall`. */
 export interface AfterToolCallContext {
-	/** The assistant message that requested the tool call. */
-	assistantMessage: AssistantMessage;
-	/** The raw tool call block from `assistantMessage.content`. */
-	toolCall: AgentToolCall;
-	/** Validated tool arguments for the target tool schema. */
-	args: unknown;
-	/** The executed tool result before any `afterToolCall` overrides are applied. */
-	result: AgentToolResult<any>;
-	/** Whether the executed tool result is currently treated as an error. */
-	isError: boolean;
-	/** Current agent context at the time the tool call is finalized. */
-	context: AgentContext;
+  /** The assistant message that requested the tool call. */
+  assistantMessage: AssistantMessage;
+  /** The raw tool call block from `assistantMessage.content`. */
+  toolCall: AgentToolCall;
+  /** Validated tool arguments for the target tool schema. */
+  args: unknown;
+  /** The executed tool result before any `afterToolCall` overrides are applied. */
+  result: AgentToolResult<any>;
+  /** Whether the executed tool result is currently treated as an error. */
+  isError: boolean;
+  /** Current agent context at the time the tool call is finalized. */
+  context: AgentContext;
 }
 
 export interface AgentLoopConfig extends SimpleStreamOptions {
-	model: Model<any>;
+  model: Model<any>;
 
-	/**
-	 * Converts AgentMessage[] to LLM-compatible Message[] before each LLM call.
-	 *
-	 * Each AgentMessage must be converted to a UserMessage, AssistantMessage, or ToolResultMessage
-	 * that the LLM can understand. AgentMessages that cannot be converted (e.g., UI-only notifications,
-	 * status messages) should be filtered out.
-	 *
-	 * Contract: must not throw or reject. Return a safe fallback value instead.
-	 * Throwing interrupts the low-level agent loop without producing a normal event sequence.
-	 *
-	 * @example
-	 * ```typescript
-	 * convertToLlm: (messages) => messages.flatMap(m => {
-	 *   if (m.role === "custom") {
-	 *     // Convert custom message to user message
-	 *     return [{ role: "user", content: m.content, timestamp: m.timestamp }];
-	 *   }
-	 *   if (m.role === "notification") {
-	 *     // Filter out UI-only messages
-	 *     return [];
-	 *   }
-	 *   // Pass through standard LLM messages
-	 *   return [m];
-	 * })
-	 * ```
-	 */
-	convertToLlm: (messages: AgentMessage[]) => Message[] | Promise<Message[]>;
+  /**
+   * Converts AgentMessage[] to LLM-compatible Message[] before each LLM call.
+   *
+   * Each AgentMessage must be converted to a UserMessage, AssistantMessage, or ToolResultMessage
+   * that the LLM can understand. AgentMessages that cannot be converted (e.g., UI-only notifications,
+   * status messages) should be filtered out.
+   *
+   * Contract: must not throw or reject. Return a safe fallback value instead.
+   * Throwing interrupts the low-level agent loop without producing a normal event sequence.
+   *
+   * @example
+   * ```typescript
+   * convertToLlm: (messages) => messages.flatMap(m => {
+   *   if (m.role === "custom") {
+   *     // Convert custom message to user message
+   *     return [{ role: "user", content: m.content, timestamp: m.timestamp }];
+   *   }
+   *   if (m.role === "notification") {
+   *     // Filter out UI-only messages
+   *     return [];
+   *   }
+   *   // Pass through standard LLM messages
+   *   return [m];
+   * })
+   * ```
+   */
+  convertToLlm: (messages: AgentMessage[]) => Message[] | Promise<Message[]>;
 
-	/**
-	 * Optional transform applied to the context before `convertToLlm`.
-	 *
-	 * Use this for operations that work at the AgentMessage level:
-	 * - Context window management (pruning old messages)
-	 * - Injecting context from external sources
-	 *
-	 * Contract: must not throw or reject. Return the original messages or another
-	 * safe fallback value instead.
-	 *
-	 * @example
-	 * ```typescript
-	 * transformContext: async (messages) => {
-	 *   if (estimateTokens(messages) > MAX_TOKENS) {
-	 *     return pruneOldMessages(messages);
-	 *   }
-	 *   return messages;
-	 * }
-	 * ```
-	 */
-	transformContext?: (messages: AgentMessage[], signal?: AbortSignal) => Promise<AgentMessage[]>;
+  /**
+   * Optional transform applied to the context before `convertToLlm`.
+   *
+   * Use this for operations that work at the AgentMessage level:
+   * - Context window management (pruning old messages)
+   * - Injecting context from external sources
+   *
+   * Contract: must not throw or reject. Return the original messages or another
+   * safe fallback value instead.
+   *
+   * @example
+   * ```typescript
+   * transformContext: async (messages) => {
+   *   if (estimateTokens(messages) > MAX_TOKENS) {
+   *     return pruneOldMessages(messages);
+   *   }
+   *   return messages;
+   * }
+   * ```
+   */
+  transformContext?: (
+    messages: AgentMessage[],
+    signal?: AbortSignal,
+  ) => Promise<AgentMessage[]>;
 
-	/**
-	 * Resolves an API key dynamically for each LLM call.
-	 *
-	 * Useful for short-lived OAuth tokens (e.g., GitHub Copilot) that may expire
-	 * during long-running tool execution phases.
-	 *
-	 * Contract: must not throw or reject. Return undefined when no key is available.
-	 */
-	getApiKey?: (provider: string) => Promise<string | undefined> | string | undefined;
+  /**
+   * Resolves an API key dynamically for each LLM call.
+   *
+   * Useful for short-lived OAuth tokens (e.g., GitHub Copilot) that may expire
+   * during long-running tool execution phases.
+   *
+   * Contract: must not throw or reject. Return undefined when no key is available.
+   */
+  getApiKey?: (
+    provider: string,
+  ) => Promise<string | undefined> | string | undefined;
 
-	/**
-	 * Returns steering messages to inject into the conversation mid-run.
-	 *
-	 * Called after the current assistant turn finishes executing its tool calls.
-	 * If messages are returned, they are added to the context before the next LLM call.
-	 * Tool calls from the current assistant message are not skipped.
-	 *
-	 * Use this for "steering" the agent while it's working.
-	 *
-	 * Contract: must not throw or reject. Return [] when no steering messages are available.
-	 */
-	getSteeringMessages?: () => Promise<AgentMessage[]>;
+  /**
+   * Returns steering messages to inject into the conversation mid-run.
+   *
+   * Called after the current assistant turn finishes executing its tool calls.
+   * If messages are returned, they are added to the context before the next LLM call.
+   * Tool calls from the current assistant message are not skipped.
+   *
+   * Use this for "steering" the agent while it's working.
+   *
+   * Contract: must not throw or reject. Return [] when no steering messages are available.
+   */
+  getSteeringMessages?: () => Promise<AgentMessage[]>;
 
-	/**
-	 * Returns follow-up messages to process after the agent would otherwise stop.
-	 *
-	 * Called when the agent has no more tool calls and no steering messages.
-	 * If messages are returned, they're added to the context and the agent
-	 * continues with another turn.
-	 *
-	 * Use this for follow-up messages that should wait until the agent finishes.
-	 *
-	 * Contract: must not throw or reject. Return [] when no follow-up messages are available.
-	 */
-	getFollowUpMessages?: () => Promise<AgentMessage[]>;
+  /**
+   * Returns follow-up messages to process after the agent would otherwise stop.
+   *
+   * Called when the agent has no more tool calls and no steering messages.
+   * If messages are returned, they're added to the context and the agent
+   * continues with another turn.
+   *
+   * Use this for follow-up messages that should wait until the agent finishes.
+   *
+   * Contract: must not throw or reject. Return [] when no follow-up messages are available.
+   */
+  getFollowUpMessages?: () => Promise<AgentMessage[]>;
 
-	/**
-	 * Tool execution mode.
-	 * - "sequential": execute tool calls one by one
-	 * - "parallel": preflight tool calls sequentially, then execute allowed tools concurrently
-	 *
-	 * Default: "parallel"
-	 */
-	toolExecution?: ToolExecutionMode;
+  /**
+   * Tool execution mode.
+   * - "sequential": execute tool calls one by one
+   * - "parallel": preflight tool calls sequentially, then execute allowed tools concurrently
+   *
+   * Default: "parallel"
+   */
+  toolExecution?: ToolExecutionMode;
 
-	/**
-	 * Called before a tool is executed, after arguments have been validated.
-	 *
-	 * Return `{ block: true }` to prevent execution. The loop emits an error tool result instead.
-	 * The hook receives the agent abort signal and is responsible for honoring it.
-	 */
-	beforeToolCall?: (context: BeforeToolCallContext, signal?: AbortSignal) => Promise<BeforeToolCallResult | undefined>;
+  /**
+   * Called before a tool is executed, after arguments have been validated.
+   *
+   * Return `{ block: true }` to prevent execution. The loop emits an error tool result instead.
+   * The hook receives the agent abort signal and is responsible for honoring it.
+   */
+  beforeToolCall?: (
+    context: BeforeToolCallContext,
+    signal?: AbortSignal,
+  ) => Promise<BeforeToolCallResult | undefined>;
 
-	/**
-	 * Called after a tool finishes executing, before final tool events are emitted.
-	 *
-	 * Return an `AfterToolCallResult` to override parts of the executed tool result:
-	 * - `content` replaces the full content array
-	 * - `details` replaces the full details payload
-	 * - `isError` replaces the error flag
-	 *
-	 * Any omitted fields keep their original values. No deep merge is performed.
-	 * The hook receives the agent abort signal and is responsible for honoring it.
-	 */
-	afterToolCall?: (context: AfterToolCallContext, signal?: AbortSignal) => Promise<AfterToolCallResult | undefined>;
+  /**
+   * Called after a tool finishes executing, before final tool events are emitted.
+   *
+   * Return an `AfterToolCallResult` to override parts of the executed tool result:
+   * - `content` replaces the full content array
+   * - `details` replaces the full details payload
+   * - `isError` replaces the error flag
+   *
+   * Any omitted fields keep their original values. No deep merge is performed.
+   * The hook receives the agent abort signal and is responsible for honoring it.
+   */
+  afterToolCall?: (
+    context: AfterToolCallContext,
+    signal?: AbortSignal,
+  ) => Promise<AfterToolCallResult | undefined>;
 }
 
 /**
  * Thinking/reasoning level for models that support it.
  * Note: "xhigh" is only supported by OpenAI gpt-5.1-codex-max, gpt-5.2, gpt-5.2-codex, gpt-5.3, and gpt-5.3-codex models.
  */
-export type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
+export type ThinkingLevel =
+  | "off"
+  | "minimal"
+  | "low"
+  | "medium"
+  | "high"
+  | "xhigh";
 
 /**
  * Extensible interface for custom app messages.
@@ -234,7 +254,7 @@ export type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhi
  * ```
  */
 export interface CustomAgentMessages {
-	// Empty by default - apps extend via declaration merging
+  // Empty by default - apps extend via declaration merging
 }
 
 /**
@@ -242,7 +262,9 @@ export interface CustomAgentMessages {
  * This abstraction allows apps to add custom message types while maintaining
  * type safety and compatibility with the base LLM messages.
  */
-export type AgentMessage = Message | CustomAgentMessages[keyof CustomAgentMessages];
+export type AgentMessage =
+  | Message
+  | CustomAgentMessages[keyof CustomAgentMessages];
 
 /**
  * Public agent state.
@@ -251,69 +273,74 @@ export type AgentMessage = Message | CustomAgentMessages[keyof CustomAgentMessag
  * assigned arrays before storing them.
  */
 export interface AgentState {
-	/** System prompt sent with each model request. */
-	systemPrompt: string;
-	/** Active model used for future turns. */
-	model: Model<any>;
-	/** Requested reasoning level for future turns. */
-	thinkingLevel: ThinkingLevel;
-	/** Available tools. Assigning a new array copies the top-level array. */
-	set tools(tools: AgentTool<any>[]);
-	get tools(): AgentTool<any>[];
-	/** Conversation transcript. Assigning a new array copies the top-level array. */
-	set messages(messages: AgentMessage[]);
-	get messages(): AgentMessage[];
-	/**
-	 * True while the agent is processing a prompt or continuation.
-	 *
-	 * This remains true until awaited `agent_end` listeners settle.
-	 */
-	readonly isStreaming: boolean;
-	/** Partial assistant message for the current streamed response, if any. */
-	readonly streamingMessage?: AgentMessage;
-	/** Tool call ids currently executing. */
-	readonly pendingToolCalls: ReadonlySet<string>;
-	/** Error message from the most recent failed or aborted assistant turn, if any. */
-	readonly errorMessage?: string;
+  /** System prompt sent with each model request. */
+  systemPrompt: string;
+  /** Active model used for future turns. */
+  model: Model<any>;
+  /** Requested reasoning level for future turns. */
+  thinkingLevel: ThinkingLevel;
+  /** Available tools. Assigning a new array copies the top-level array. */
+  set tools(tools: AgentTool<any>[]);
+  get tools(): AgentTool<any>[];
+  /** Conversation transcript. Assigning a new array copies the top-level array. */
+  set messages(messages: AgentMessage[]);
+  get messages(): AgentMessage[];
+  /**
+   * True while the agent is processing a prompt or continuation.
+   *
+   * This remains true until awaited `agent_end` listeners settle.
+   */
+  readonly isStreaming: boolean;
+  /** Partial assistant message for the current streamed response, if any. */
+  readonly streamingMessage?: AgentMessage;
+  /** Tool call ids currently executing. */
+  readonly pendingToolCalls: ReadonlySet<string>;
+  /** Error message from the most recent failed or aborted assistant turn, if any. */
+  readonly errorMessage?: string;
 }
 
 /** Final or partial result produced by a tool. */
 export interface AgentToolResult<T> {
-	/** Text or image content returned to the model. */
-	content: (TextContent | ImageContent)[];
-	/** Arbitrary structured details for logs or UI rendering. */
-	details: T;
+  /** Text or image content returned to the model. */
+  content: (TextContent | ImageContent)[];
+  /** Arbitrary structured details for logs or UI rendering. */
+  details: T;
 }
 
 /** Callback used by tools to stream partial execution updates. */
-export type AgentToolUpdateCallback<T = any> = (partialResult: AgentToolResult<T>) => void;
+export type AgentToolUpdateCallback<T = any> = (
+  partialResult: AgentToolResult<T>,
+) => void;
 
 /** Tool definition used by the agent runtime. */
-export interface AgentTool<TParameters extends TSchema = TSchema, TDetails = any> extends Tool<TParameters> {
-	/** Human-readable label for UI display. */
-	label: string;
-	/**
-	 * Optional compatibility shim for raw tool-call arguments before schema validation.
-	 * Must return an object that matches `TParameters`.
-	 */
-	prepareArguments?: (args: unknown) => Static<TParameters>;
-	/** Execute the tool call. Throw on failure instead of encoding errors in `content`. */
-	execute: (
-		toolCallId: string,
-		params: Static<TParameters>,
-		signal?: AbortSignal,
-		onUpdate?: AgentToolUpdateCallback<TDetails>,
-	) => Promise<AgentToolResult<TDetails>>;
+export interface AgentTool<
+  TParameters extends TSchema = TSchema,
+  TDetails = any,
+> extends Tool<TParameters> {
+  /** Human-readable label for UI display. */
+  label: string;
+  /**
+   * Optional compatibility shim for raw tool-call arguments before schema validation.
+   * Must return an object that matches `TParameters`.
+   */
+  prepareArguments?: (args: unknown) => Static<TParameters>;
+  /** Execute the tool call. Throw on failure instead of encoding errors in `content`. */
+  execute: (
+    toolCallId: string,
+    params: Static<TParameters>,
+    signal?: AbortSignal,
+    onUpdate?: AgentToolUpdateCallback<TDetails>,
+  ) => Promise<AgentToolResult<TDetails>>;
 }
 
 /** Context snapshot passed into the low-level agent loop. */
 export interface AgentContext {
-	/** System prompt included with the request. */
-	systemPrompt: string;
-	/** Transcript visible to the model. */
-	messages: AgentMessage[];
-	/** Tools available for this run. */
-	tools?: AgentTool<any>[];
+  /** System prompt included with the request. */
+  systemPrompt: string;
+  /** Transcript visible to the model. */
+  messages: AgentMessage[];
+  /** Tools available for this run. */
+  tools?: AgentTool<any>[];
 }
 
 /**
@@ -324,18 +351,46 @@ export interface AgentContext {
  * idle only after those listeners finish.
  */
 export type AgentEvent =
-	// Agent lifecycle
-	| { type: "agent_start" }
-	| { type: "agent_end"; messages: AgentMessage[] }
-	// Turn lifecycle - a turn is one assistant response + any tool calls/results
-	| { type: "turn_start" }
-	| { type: "turn_end"; message: AgentMessage; toolResults: ToolResultMessage[] }
-	// Message lifecycle - emitted for user, assistant, and toolResult messages
-	| { type: "message_start"; message: AgentMessage; id: string }
-	// Only emitted for assistant messages during streaming
-	| { type: "message_update"; message: AgentMessage; assistantMessageEvent: AssistantMessageEvent; id: string; delta: string; thinkingDelta: string }
-	| { type: "message_end"; message: AgentMessage; id: string }
-	// Tool execution lifecycle
-	| { type: "tool_execution_start"; toolCallId: string; toolName: string; args: any }
-	| { type: "tool_execution_update"; toolCallId: string; toolName: string; args: any; partialResult: any }
-	| { type: "tool_execution_end"; toolCallId: string; toolName: string; result: any; isError: boolean };
+  // Agent lifecycle
+  | { type: "agent_start" }
+  | { type: "agent_end"; messages: AgentMessage[] }
+  // Turn lifecycle - a turn is one assistant response + any tool calls/results
+  | { type: "turn_start" }
+  | {
+      type: "turn_end";
+      message: AgentMessage;
+      toolResults: ToolResultMessage[];
+    }
+  // Message lifecycle - emitted for user, assistant, and toolResult messages
+  | { type: "message_start"; message: AgentMessage; id: string }
+  // Only emitted for assistant messages during streaming
+  | {
+      type: "message_update";
+      message: AgentMessage;
+      assistantMessageEvent: AssistantMessageEvent;
+      id: string;
+      delta: string;
+      thinkingDelta: string;
+    }
+  | { type: "message_end"; message: AgentMessage; id: string }
+  // Tool execution lifecycle
+  | {
+      type: "tool_execution_start";
+      toolCallId: string;
+      toolName: string;
+      args: any;
+    }
+  | {
+      type: "tool_execution_update";
+      toolCallId: string;
+      toolName: string;
+      args: any;
+      partialResult: any;
+    }
+  | {
+      type: "tool_execution_end";
+      toolCallId: string;
+      toolName: string;
+      result: any;
+      isError: boolean;
+    };
