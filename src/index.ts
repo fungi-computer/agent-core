@@ -1,7 +1,7 @@
-// Core Agent
-export * from "./agent.js";
 // Loop functions
 export * from "./agent-loop.js";
+// Core Agent
+export * from "./agent.js";
 // Proxy utilities
 export * from "./proxy.js";
 // Types
