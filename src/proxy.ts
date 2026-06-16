@@ -20,20 +20,20 @@ import {
  * Proxy event types - server sends these with partial field stripped to reduce bandwidth.
  */
 export type ProxyAssistantMessageEvent =
-  | { contentIndex: number; contentSignature?: string; type: "text_end"; }
-  | { contentIndex: number; contentSignature?: string; type: "thinking_end"; }
-  | { contentIndex: number; delta: string; type: "text_delta"; }
-  | { contentIndex: number; delta: string; type: "thinking_delta"; }
-  | { contentIndex: number; delta: string; type: "toolcall_delta"; }
+  | { contentIndex: number; contentSignature?: string; type: "text_end" }
+  | { contentIndex: number; contentSignature?: string; type: "thinking_end" }
+  | { contentIndex: number; delta: string; type: "text_delta" }
+  | { contentIndex: number; delta: string; type: "thinking_delta" }
+  | { contentIndex: number; delta: string; type: "toolcall_delta" }
   | {
       contentIndex: number;
       id: string;
       toolName: string;
       type: "toolcall_start";
     }
-  | { contentIndex: number; type: "text_start"; }
-  | { contentIndex: number; type: "thinking_start"; }
-  | { contentIndex: number; type: "toolcall_end"; }
+  | { contentIndex: number; type: "text_start" }
+  | { contentIndex: number; type: "thinking_start" }
+  | { contentIndex: number; type: "toolcall_end" }
   | {
       errorMessage?: string;
       reason: Extract<StopReason, "aborted" | "error">;

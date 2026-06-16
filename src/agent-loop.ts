@@ -72,7 +72,7 @@ export function agentLoop(
     })
     .catch((error) => {
       console.error("[agentLoop] Error:", error);
-       
+
       stream.push({
         error: error instanceof Error ? error.message : String(error),
         type: "error",
@@ -121,7 +121,7 @@ export function agentLoopContinue(
     })
     .catch((error) => {
       console.error("[agentLoopContinue] Error:", error);
-       
+
       stream.push({
         error: error instanceof Error ? error.message : String(error),
         type: "error",

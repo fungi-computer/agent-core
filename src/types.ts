@@ -86,9 +86,9 @@ export type AgentEvent =
       thinkingDelta: string;
       type: "message_update";
     }
-  | { id: string; message: AgentMessage; type: "message_end"; }
+  | { id: string; message: AgentMessage; type: "message_end" }
   // Message lifecycle - emitted for user, assistant, and toolResult messages
-  | { id: string; message: AgentMessage; type: "message_start"; }
+  | { id: string; message: AgentMessage; type: "message_start" }
   // Only emitted for assistant messages during streaming
   | {
       isError: boolean;
@@ -103,7 +103,7 @@ export type AgentEvent =
       type: "turn_end";
     }
   // Tool execution lifecycle
-  | { messages: AgentMessage[]; type: "agent_end"; }
+  | { messages: AgentMessage[]; type: "agent_end" }
   | { type: "agent_start" }
   | { type: "turn_start" };
 
