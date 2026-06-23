@@ -1,6 +1,6 @@
 {
   "name": "@shiit/agent-core",
-  "version": "0.66.1",
+  "version": "0.66.2",
   "description": "Fork of @mariozechner/pi-agent-core with message ID support",
   "type": "module",
   "main": "./dist/index.js",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@mariozechner/pi-ai": "^0.73.1",
-    "@shiit/id": "^0.1.0",
+    "@shiit/id": "^0.1.1",
     "@sinclair/typebox": "^0.34.49"
   },
   "devDependencies": {
