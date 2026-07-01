@@ -9,8 +9,8 @@ import type {
   TextContent,
   Tool,
   ToolResultMessage,
-} from "@mariozechner/pi-ai";
-import type { Static, TSchema } from "@sinclair/typebox";
+} from "@earendil-works/pi-ai/compat";
+import type { Static, TSchema } from "typebox";
 
 /** Context passed to `afterToolCall`. */
 export interface AfterToolCallContext {

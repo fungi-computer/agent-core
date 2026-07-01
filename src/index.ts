@@ -6,4 +6,4 @@ export * from "./agent.js";
 export * from "./proxy.js";
 // Types
 export * from "./types.js";
-export type { ImageContent } from "@mariozechner/pi-ai";
+export type { ImageContent } from "@earendil-works/pi-ai";

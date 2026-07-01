@@ -14,7 +14,7 @@ import {
   type SimpleStreamOptions,
   type StopReason,
   type ToolCall,
-} from "@mariozechner/pi-ai";
+} from "@earendil-works/pi-ai";
 
 /**
  * Proxy event types - server sends these with partial field stripped to reduce bandwidth.

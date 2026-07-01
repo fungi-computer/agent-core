@@ -17,9 +17,9 @@
     "test": "vitest --run --passWithNoTests"
   },
   "dependencies": {
-    "@mariozechner/pi-ai": "^0.73.1",
+    "@earendil-works/pi-ai": "^0.80.2",
     "@shiit/id": "^0.1.1",
-    "@sinclair/typebox": "^0.34.49"
+    "typebox": "^1.1.38"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",

@@ -10,7 +10,7 @@ import {
   streamSimple,
   type ToolResultMessage,
   validateToolArguments,
-} from "@mariozechner/pi-ai";
+} from "@earendil-works/pi-ai/compat";
 import { nanoid } from "@shiit/id";
 
 import type {
@@ -710,7 +710,7 @@ async function streamAssistantResponse(
         addedPartial = true;
         await emit({
           id: messageId!,
-          message: { ...partialMessage },
+          message: { ...partialMessage } as AgentMessage,
           type: "message_start",
         });
         break;
@@ -738,7 +738,7 @@ async function streamAssistantResponse(
             assistantMessageEvent: event,
             delta,
             id: messageId!,
-            message: { ...partialMessage },
+            message: { ...partialMessage } as AgentMessage,
             thinkingDelta,
             type: "message_update",
           });
