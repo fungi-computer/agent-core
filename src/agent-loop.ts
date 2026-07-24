@@ -679,10 +679,6 @@ async function streamAssistantResponse(
 
       case "error": {
         const finalMessage = await response.result();
-        console.log(
-          "[agent-loop] finalMessage:",
-          JSON.stringify(finalMessage).slice(0, 200),
-        );
         if (addedPartial) {
           context.messages[context.messages.length - 1] = finalMessage;
         } else {
