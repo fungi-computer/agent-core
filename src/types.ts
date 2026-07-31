@@ -299,6 +299,11 @@ export interface AgentTool<
    * Must return an object that matches `TParameters`.
    */
   prepareArguments?: (args: unknown) => Static<TParameters>;
+  /**
+   * Optional lifecycle hook for tearing down per-build resources when
+   * this tool list is replaced (e.g. after workspace attach/detach).
+   */
+  dispose?: () => void;
 }
 
 /** A single tool call content block emitted by an assistant message. */
