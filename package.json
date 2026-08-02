@@ -17,7 +17,7 @@
     "test": "vitest --run --passWithNoTests"
   },
   "dependencies": {
-    "@earendil-works/pi-ai": "^0.80.2",
+    "@earendil-works/pi-ai": "0.83.0",
     "@shiit/id": "^0.1.1",
     "typebox": "^1.1.38"
   },
